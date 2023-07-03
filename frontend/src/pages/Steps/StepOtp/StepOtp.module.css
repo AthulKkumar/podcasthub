@@ -1,0 +1,12 @@
+.cardWrapper {
+  /* To avoid duplication of code */
+  composes: cardWrapper from "../../../App.module.css";
+}
+
+.bottomParagraph {
+  composes: bottomParagraph from "../StepPhoneEmail/StepPhoneEmail.module.css";
+}
+
+.actionButtonWrapper {
+  margin-top: 40px;
+}

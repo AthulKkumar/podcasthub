@@ -1,22 +1,69 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Navigation from "./components/shared/Navigation/Navigation";
-import Register from "./pages/Register/Register";
-import Login from "./pages/Login/Login";
+import Authenticate from "./pages/Authenticate/Authenticate";
+import Activate from "./pages/Activate/Activate";
+import Rooms from "./pages/Rooms/Rooms";
+
+const isAuth = false;
+const user = {
+  activated: false,
+};
 
 function App() {
   return (
     <Router>
       <Navigation />
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/register" element={<Register />} />
-        <Route exact path="/login" element={<Login />} />
+        <Route path="/" exact element={<GuestRoute Component={Home} />} />
+        <Route
+          path="/authenticate"
+          element={<GuestRoute Component={Authenticate} />}
+        />
+        <Route
+          path="/activate"
+          element={<SemiProtectedRoute Component={Activate} />}
+        />
+        <Route path="/rooms" element={<ProtectedRoute Component={Rooms} />} />
       </Routes>
     </Router>
   );
 }
+
+// Protected Routes
+
+// Guest Route (Only for non-authenticated users)
+const GuestRoute = ({ Component }) => {
+  return isAuth ? <Navigate to="/rooms" /> : <Component />;
+};
+
+// Semi-Protected Route (Only for non-activated users)
+const SemiProtectedRoute = ({ Component }) => {
+  return !isAuth ? (
+    <Navigate to="/" />
+  ) : isAuth && !user.activated ? (
+    <Component />
+  ) : (
+    <Navigate to="/rooms" />
+  );
+};
+
+// Protected Route (Only for authenticated users)
+const ProtectedRoute = ({ Component }) => {
+  return !isAuth ? (
+    <Navigate to="/" />
+  ) : isAuth && !user.activated ? (
+    <Navigate to="/activate" />
+  ) : (
+    <Component />
+  );
+};
 
 export default App;

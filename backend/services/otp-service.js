@@ -7,12 +7,15 @@ const twilio = require("twilio")(smsSid, smsAuthToken, {
   lazyLoading: true,
 });
 
+// Services for Otp
 class OtpService {
+  // Function for generating the otp
   async getOtp() {
     const otp = crypto.randomInt(1000, 9999);
     return otp;
   }
 
+  // Function for sending the sms
   async sendSms(phone, otp) {
     return await twilio.messages.create({
       to: phone,
@@ -21,6 +24,7 @@ class OtpService {
     });
   }
 
+  // Function for verifying the otp
   verifyOtp(hashedOtp, data) {
     const computedHash = hashService.hashOtp(data);
     // It will return True or False

@@ -25,7 +25,7 @@ class AuthController {
     // Send the OTP to the user
     try {
       // await otpService.sendSms(phone, otp);
-      res.status(200).json({ hash: `${hash}.${expires}`, phone, otp });
+      res.json({ hash: `${hash}.${expires}`, phone, otp });
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "message sending failed" });
@@ -37,7 +37,9 @@ class AuthController {
     const { phone, hash, otp } = req.body;
 
     if (!phone || !hash || !otp) {
-      res.status(400).json({ message: "phone, hash, and otp are required" });
+      return res
+        .status(400)
+        .json({ message: "phone, hash, and otp are required" });
     }
 
     const [hashedOtp, expires] = hash.split(".");
@@ -73,14 +75,21 @@ class AuthController {
       activated: false,
     });
 
+    await tokenService.storeRefreshToken(refreshToken, user._id);
+
     // Storing the refersh token in cookie
     res.cookie("refreshToken", refreshToken, {
       maxAge: 1000 * 60 * 60 * 24 * 30,
       httpOnly: true,
     });
+    res.cookie("accessToken", accessToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+    });
+
     // Sending the user details to user dto to trim the data for essential things
     const userDto = new UserDto(user);
-    res.json({ accessToken, user: userDto });
+    res.json({ user: userDto, auth: true });
   }
 }
 

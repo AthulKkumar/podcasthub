@@ -13,6 +13,7 @@ const Phone = ({ onNext }) => {
 
   async function submit() {
     try {
+      if (!phoneNumber) return;
       // Sending the user enterd phone number to backend to generate otp
       const { data } = await sendOtp({ phone: phoneNumber });
       console.log(data);

@@ -16,6 +16,8 @@ const StepOtp = () => {
 
   // Triggers the function when the user hit the next button
   async function submit() {
+    if (!otp || !phone || !hash) return;
+
     try {
       // Sending the data to backend to verify otp
       const { data } = await verifyOtp({ otp, phone, hash });

@@ -2,6 +2,7 @@ const Jimp = require("jimp");
 const path = require("path");
 const userService = require("../services/user-service");
 const UserDto = require("../dtos/user-dto");
+const tokenService = require("../services/token-service");
 
 // This is for Semiprotected routes
 class ActivateController {
@@ -14,7 +15,7 @@ class ActivateController {
 
     //Image Base64
     const buffer = Buffer.from(
-      avatar.replace(/^data:image\/png;base64,/, ""),
+      avatar.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
       "base64"
     );
     const imagePath = `${Date.now()}-${Math.round(Math.random() * 1e9)}.png`;

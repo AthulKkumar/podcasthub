@@ -3,3 +3,20 @@
   display: flex;
   justify-content: space-between;
 }
+
+.logoutButton {
+  cursor: pointer;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0077ff;
+  margin: 0px 20px;
+  margin-left: 10px;
+}

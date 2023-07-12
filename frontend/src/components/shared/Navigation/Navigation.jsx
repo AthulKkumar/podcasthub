@@ -39,21 +39,25 @@ const Navigation = () => {
         <img src="/images/mic.png" alt="logo" />
         <span style={logoText}>PodcastHub</span>
       </Link>
-      <div className={styles.navRight}>
-        <h3>{user.name}</h3>
-        <Link to="/">
-          <img
-            className={styles.avatar}
-            src={user.avatar}
-            alt="avatar"
-            width="40px"
-            height="40px"
-          />
-        </Link>
-        <button className={styles.logoutButton} onClick={logoutUser}>
-          <img src="/images/logout.png" alt="logout" />
-        </button>
-      </div>
+      {isAuth && (
+        <div className={styles.navRight}>
+          <h3>{user?.name}</h3>
+
+          <Link to="/">
+            <img
+              className={styles.avatar}
+              src={user.avatar ? user.avatar : "/images/monkey-avatar.png"}
+              alt="avatar"
+              width="40px"
+              height="40px"
+            />
+          </Link>
+
+          <button className={styles.logoutButton} onClick={logoutUser}>
+            <img src="/images/logout.png" alt="logout" />
+          </button>
+        </div>
+      )}
     </nav>
   );
 };

@@ -1,97 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Rooms.module.css";
 import RoomCard from "../../components/RoomCard/RoomCard";
-
-// Dummy data (from backend)
-const rooms = [
-  {
-    id: 1,
-    topic: "which is best frame work?",
-    speakers: [
-      {
-        id: 1,
-        name: "jonh doe",
-        avatar: "/images/mic.png",
-      },
-      {
-        id: 2,
-        name: "saar",
-        avatar: "/images/monkey-avatar.png",
-      },
-    ],
-    totalPeople: 40,
-  },
-  {
-    id: 2,
-    topic: "which is best frame work?",
-    speakers: [
-      {
-        id: 1,
-        name: "jonh doe",
-        avatar: "/images/monkey-avatar.png",
-      },
-      {
-        id: 2,
-        name: "saar",
-        avatar: "/images/monkey-avatar.png",
-      },
-    ],
-    totalPeople: 40,
-  },
-  {
-    id: 3,
-    topic: "which is best frame work?",
-    speakers: [
-      {
-        id: 1,
-        name: "jonh doe",
-        avatar: "/images/monkey-avatar.png",
-      },
-      {
-        id: 2,
-        name: "saar",
-        avatar: "/images/monkey-avatar.png",
-      },
-    ],
-    totalPeople: 40,
-  },
-  {
-    id: 4,
-    topic: "which is best frame work?",
-    speakers: [
-      {
-        id: 1,
-        name: "jonh doe",
-        avatar: "/images/monkey-avatar.png",
-      },
-      {
-        id: 2,
-        name: "saar",
-        avatar: "/images/monkey-avatar.png",
-      },
-    ],
-    totalPeople: 40,
-  },
-  {
-    id: 5,
-    topic: "which is best frame work?",
-    speakers: [
-      {
-        id: 1,
-        name: "jonh doe",
-        avatar: "/images/monkey-avatar.png",
-      },
-      {
-        id: 2,
-        name: "saar",
-        avatar: "/images/monkey-avatar.png",
-      },
-    ],
-    totalPeople: 40,
-  },
-];
+import AddRoomModal from "../../components/AddRoomModal/AddRoomModal";
+import { getAllRooms } from "../../http";
 
 const Rooms = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [rooms, setRooms] = useState([]);
+
+  // when eterns into rooms page it will trigger
+  useEffect(() => {
+    // Fetch all rooms from server side
+    const fetchRoom = async () => {
+      const { data } = await getAllRooms();
+      setRooms(data);
+    };
+
+    fetchRoom();
+  }, []);
+
+  function openModal() {
+    setShowModal(true);
+  }
+
   return (
     <>
       <div className="container">
@@ -104,10 +35,10 @@ const Rooms = () => {
             </div>
           </div>
           <div className={styles.right}>
-            <div className={styles.startRoomButton}>
+            <button onClick={openModal} className={styles.startRoomButton}>
               <img src="/images/add-room-icon.png" alt="start-room" />
               <span>Start a room</span>
-            </div>
+            </button>
           </div>
         </div>
         {/* Iterate through every rooms */}
@@ -117,6 +48,7 @@ const Rooms = () => {
           ))}
         </div>
       </div>
+      {showModal && <AddRoomModal onClose={() => setShowModal(false)} />}
     </>
   );
 };

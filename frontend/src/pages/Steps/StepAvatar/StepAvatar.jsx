@@ -13,7 +13,7 @@ const StepAvatar = ({ onNext }) => {
   const { name, avatar } = useSelector((state) => state.activate); //Taking name, avatar from store
   const [image, setImage] = useState("/images/monkey-avatar.png");
   const [loading, setLoading] = useState(false);
-  // const [unMounted, setUnMounted] = useState(false);
+  const [unMounted, setUnMounted] = useState(false);
 
   // Capturing the inputed image(file)
   function captureImage(e) {
@@ -35,9 +35,9 @@ const StepAvatar = ({ onNext }) => {
 
       console.log(data);
       if (data.auth) {
-        // if (!unMounted) {
-        dispatch(setAuth(data));
-        // }
+        if (!unMounted) {
+          dispatch(setAuth(data));
+        }
       }
     } catch (error) {
       console.log(error);
@@ -46,12 +46,12 @@ const StepAvatar = ({ onNext }) => {
     }
   }
 
-  // useEffect(() => {
-  //   //Cleanup function
-  //   return () => {
-  //     setUnMounted(true);
-  //   };
-  // }, []);
+  useEffect(() => {
+    //Cleanup function
+    return () => {
+      setUnMounted(true);
+    };
+  }, []);
 
   if (loading) return <Loader message="Activation in progress..." />;
   return (

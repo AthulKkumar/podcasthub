@@ -1,0 +1,12 @@
+.userHead {
+  background: pink;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.userAvatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}

@@ -42,7 +42,9 @@ const StepAvatar = ({ onNext }) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      if (!unMounted) {
+        setLoading(false);
+      }
     }
   }
 

@@ -17,6 +17,7 @@ export const activate = (data) => api.post("/api/activate", data);
 export const logout = () => api.post("/api/logout");
 export const createRoom = (data) => api.post("/api/rooms", data);
 export const getAllRooms = () => api.get("/api/rooms");
+export const getRoom = (roomId) => api.get(`/api/rooms/${roomId}`);
 
 //Interceptor (It automatically send an request to server if any response falied)
 api.interceptors.response.use(

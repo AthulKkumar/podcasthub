@@ -18,4 +18,6 @@ router.post("/api/rooms", authMiddleware, roomsController.create);
 
 router.get("/api/rooms", authMiddleware, roomsController.index);
 
+router.get("/api/rooms/:id", authMiddleware, roomsController.show);
+
 module.exports = router;

@@ -10,8 +10,13 @@ const Room = () => {
   const { id: roomId } = useParams();
   const { user } = useSelector((state) => state.auth);
 
-  const { clients, provideRef } = useWebRTC(roomId, user);
+  const { clients, provideRef, handleMute } = useWebRTC(roomId, user);
   const [room, setRoom] = useState(null);
+  const [isMute, setMute] = useState(true);
+
+  useEffect(() => {
+    handleMute(isMute, user.id);
+  }, [isMute]);
 
   const handleManualLeave = () => {
     navigate("/rooms");
@@ -19,13 +24,22 @@ const Room = () => {
 
   useEffect(() => {
     const fetchRoom = async () => {
-      const { data } = await getRoom(roomId);
-      console.log(data);
-      setRoom((prev) => data);
+      try {
+        const { data } = await getRoom(roomId);
+        setRoom((prev) => data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchRoom();
   }, [roomId]);
+
+  const handleMuteClick = (clientId) => {
+    if (clientId !== user.id) return;
+
+    setMute((isMute) => !isMute);
+  };
 
   return (
     <div>
@@ -65,8 +79,15 @@ const Room = () => {
                     alt="avatar"
                   />
 
-                  <button className={styles.micBtn}>
-                    <img src="/images/mic-mute.png" alt="mic-mute" />
+                  <button
+                    onClick={() => handleMuteClick(client.id)}
+                    className={styles.micBtn}
+                  >
+                    {client.muted ? (
+                      <img src="/images/mic-mute.png" alt="mic-mute" />
+                    ) : (
+                      <img src="/images/unmute.png" alt="unmute" />
+                    )}
                   </button>
                 </div>
                 <h4>{client.name}</h4>

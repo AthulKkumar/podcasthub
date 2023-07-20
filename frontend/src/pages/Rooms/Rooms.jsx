@@ -12,8 +12,12 @@ const Rooms = () => {
   useEffect(() => {
     // Fetch all rooms from server side
     const fetchRoom = async () => {
-      const { data } = await getAllRooms();
-      setRooms(data);
+      try {
+        const { data } = await getAllRooms();
+        setRooms(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchRoom();

@@ -10,6 +10,7 @@ export const useWebRTC = (roomId, user) => {
   const connections = useRef({});
   const localMediaStream = useRef(null);
   const socket = useRef(null);
+  const clientsRef = useRef([]);
 
   useEffect(() => {
     socket.current = socketInit();
@@ -39,7 +40,7 @@ export const useWebRTC = (roomId, user) => {
     };
 
     startCapture().then(() => {
-      addNewClient(user, () => {
+      addNewClient({ ...user, muted: true }, () => {
         const localElement = audioElement.current[user.id];
         if (localElement) {
           localElement.volume = 0;
@@ -84,7 +85,7 @@ export const useWebRTC = (roomId, user) => {
 
       //Handle on track on this connection
       connections.current[peerId].ontrack = ({ streams: [remoteStream] }) => {
-        addNewClient(remoteUser, () => {
+        addNewClient({ ...remoteUser, muted: true }, () => {
           if (audioElement.current[remoteUser.id]) {
             audioElement.current[remoteUser.id].srcObject = remoteStream;
           } else {
@@ -190,5 +191,64 @@ export const useWebRTC = (roomId, user) => {
     };
   }, []);
 
-  return { clients, provideRef };
+  useEffect(() => {
+    clientsRef.current = clients;
+  }, [clients]);
+
+  //Listen for the mute/unmute
+  useEffect(() => {
+    socket.current.on(ACTIONS.MUTE, ({ peerId, userId }) => {
+      setMute(true, userId);
+    });
+
+    socket.current.on(ACTIONS.UM_MUTE, ({ peerId, userId }) => {
+      setMute(false, userId);
+    });
+
+    const setMute = (mute, userId) => {
+      const clientIdx = clientsRef.current
+        .map((client) => client.id)
+        .indexOf(userId);
+
+      const connectedClientsClone = JSON.parse(
+        JSON.stringify(clientsRef.current)
+      );
+
+      if (clientIdx > -1) {
+        connectedClientsClone[clientIdx].muted = mute;
+        setClients(connectedClientsClone);
+      }
+    };
+  }, []);
+
+  //Handling mute
+  const handleMute = (isMute, userId) => {
+    let interval = setInterval(() => {
+      let settled = false;
+
+      if (localMediaStream.current) {
+        localMediaStream.current.getTracks()[0].enabled = !isMute;
+
+        if (isMute) {
+          socket.current.emit(ACTIONS.MUTE, {
+            roomId,
+            userId,
+          });
+        } else {
+          socket.current.emit(ACTIONS.UM_MUTE, {
+            roomId,
+            userId,
+          });
+        }
+
+        settled = true;
+      }
+
+      if (settled) {
+        clearInterval(interval);
+      }
+    }, 200);
+  };
+
+  return { clients, provideRef, handleMute };
 };

@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setName } from "../../../store/activateSlice";
 
 const StepName = ({ onNext }) => {
-  const dispatch = useDispatch();
   const { name } = useSelector((state) => state.activate);
+  const dispatch = useDispatch();
   const [fullName, setFullName] = useState(name);
 
   function nextStep() {

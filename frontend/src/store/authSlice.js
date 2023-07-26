@@ -18,11 +18,7 @@ export const authSlice = createSlice({
       const { user } = action.payload;
 
       state.user = user;
-      if (user === null) {
-        state.isAuth = false;
-      } else {
-        state.isAuth = true;
-      }
+      state.isAuth = !!user; // this is the bug fix
     },
 
     // This is to set the phone and the hash value

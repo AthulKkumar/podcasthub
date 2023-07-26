@@ -6,6 +6,7 @@
 
 .logoutButton {
   cursor: pointer;
+  background: none;
 }
 
 .navRight {

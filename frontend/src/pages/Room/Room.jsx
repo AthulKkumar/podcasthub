@@ -16,7 +16,7 @@ const Room = () => {
 
   useEffect(() => {
     handleMute(isMute, user.id);
-  }, [isMute]);
+  }, [isMute, user.id]);
 
   const handleManualLeave = () => {
     navigate("/rooms");

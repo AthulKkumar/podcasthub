@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongoDb
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - ./data/podcasthub:/data/db
+
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./backend/
+
+    container_name: backend
+    ports:
+      - "5000:5000"
+    restart: always
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/backend
+      - /backend/node_modules
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./
+
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    restart: always
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend

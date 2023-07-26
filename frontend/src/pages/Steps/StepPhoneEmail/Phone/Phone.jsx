@@ -14,7 +14,7 @@ const Phone = ({ onNext }) => {
   async function submit() {
     try {
       if (!phoneNumber) return;
-      // Sending the user enterd phone number to backend to generate otp
+      // Sending the user entered phone number to backend to generate otp
       const { data } = await sendOtp({ phone: phoneNumber });
       console.log(data);
       dispatch(setOtp({ phone: data.phone, hash: data.hash }));
